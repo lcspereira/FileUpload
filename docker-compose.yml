@@ -3,15 +3,15 @@ version: '3'
 services:
     laravel.test:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.0
+            context: ./docker
             dockerfile: Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWGROUP: '1000'
         image: sail-8.0/app
         ports:
             - '${APP_PORT:-80}:80'
         environment:
-            WWWUSER: '${WWWUSER}'
+            WWWUSER: '1000'
             LARAVEL_SAIL: 1
         volumes:
             - '.:/var/www/html'
