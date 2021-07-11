@@ -12,9 +12,7 @@ use App\Models\User;
 class FileServiceTest extends TestCase
 {
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Instance test
      */
     public function test_file_service_can_instantiate()
     {

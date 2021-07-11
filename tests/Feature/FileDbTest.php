@@ -11,16 +11,18 @@ class FileDbTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test instance
+     */
     public function test_file_can_be_instantiated()
     {
         $file = File::factory()->make();
 
         $this->assertInstanceOf(File::class, $file, 'Object is not a File object (' . get_class($file) . ")");
     }
+
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Database tests
      */
     public function test_file_db_creation()
     {
@@ -34,11 +36,6 @@ class FileDbTest extends TestCase
         $this->assertDatabaseCount('files', 5);
     }
 
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
     public function test_file_db_delete()
     {
         $file = File::factory()

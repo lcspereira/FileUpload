@@ -8,6 +8,9 @@ use App\Services\FileService;
 
 class FileController extends Controller
 {
+    /**
+     * Index action (main page)
+     */
     public function index()
     {
         $user = Auth::user();
@@ -16,6 +19,9 @@ class FileController extends Controller
         return view('files');
     }
 
+    /**
+     * List the files that belongs to the logged user
+     */
     public function list()
     {
         try {
@@ -29,6 +35,11 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * Uploads the file
+     *
+     * @param Request
+     */
     public function create(Request $request)
     {
         try {
@@ -46,6 +57,11 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * Deletes file
+     *
+     * @param int: File ID
+     */
     public function delete(int $idFile)
     {
         try {
@@ -66,6 +82,11 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * Rename the file
+     *
+     * @param Request
+     */
     public function rename (Request $request)
     {
         $idFile = $request->get('idFile');
@@ -93,6 +114,11 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * Download the file
+     *
+     * @param int: File ID
+     */
     public function download (int $idFile)
     {
         $user = Auth::user();
