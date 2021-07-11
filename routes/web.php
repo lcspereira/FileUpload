@@ -28,7 +28,9 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/files', [FileController::
 
 Route::middleware(['auth:sanctum', 'verified'])->post('/files/create', [FileController::class, 'create'])->name('files.create');
 
-Route::middleware(['auth:sanctum', 'verified'])->post('/files/rename/{idFile}', [FileController::class, 'rename'])->name('files.rename');
+Route::middleware(['auth:sanctum', 'verified'])->get('/files/rename/{idFile}', [FileController::class, 'rename'])->name('files.rename.get');
+
+Route::middleware(['auth:sanctum', 'verified'])->post('/files/rename/{idFile}', [FileController::class, 'rename'])->name('files.rename.post');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/files/delete/{idFile}', [FileController::class, 'delete'])->name('files.delete');
 
