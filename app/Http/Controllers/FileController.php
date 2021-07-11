@@ -11,6 +11,8 @@ class FileController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $fs = new FileService($user);
+        $ret = $fs->createUserDirectoryIfNotExists();
         return view('files');
     }
 
@@ -34,9 +36,9 @@ class FileController extends Controller
             $fs = new FileService($user);
             $msg = "File created successfully.";
                 $validator = $request->validate([
-                    'file' => 'required|max:8388608'
+                    'uploadFile' => 'required|max:8388608'
                 ]);
-            $fs->saveFile($request->file());
+            $fs->saveFile($request->file('uploadFile'));
         } catch (\Exception $e) {
             $msg = $e->getMessage();
         } finally {
@@ -60,27 +62,34 @@ class FileController extends Controller
                 'message' => 'Error deleting file: ' . $e->getMessage()
             ];
         } finally {
-            return response()->json($status);
+            return redirect('/files')->with('message', $status['message']);
         }
     }
 
-    public function rename (Request $request, int $idFile, string $newName)
+    public function rename (Request $request)
     {
-        try {
-            $user = Auth::user();
-            $fs = new FileService($user);
-            $status = [
-                'status' => 0,
-                'message' => 'File was renamed successfully.'
-            ];
-            $fs->renameFile($idFile, $newName);
-        } catch (\Exception $e) {
-            $status = [
-                'status' => -2,
-                'message' => 'Error renaminc file: ' . $e->getMessage()
-            ];
-        } finally {
-            return response()->json($status);
+        $idFile = $request->get('idFile');
+        $newName = $request->get('newName');
+
+        if (isset($newName)) {
+            try {
+                $user = Auth::user();
+                $fs = new FileService($user);
+                $status = [
+                    'status' => 0,
+                    'message' => 'File was renamed successfully.'
+                ];
+                $fs->renameFile($idFile, $newName);
+            } catch (\Exception $e) {
+                $status = [
+                    'status' => -2,
+                    'message' => 'Error renaming file: ' . $e->getMessage()
+                ];
+            } finally {
+                return redirect('/files')->with('message', $status['message']);
+            }
+        } else {
+            return view ('rename', ['idFile' => $idFile]);
         }
     }
 
@@ -88,6 +97,8 @@ class FileController extends Controller
     {
         $user = Auth::user();
         $fs = new FileService($user);
-        return $fs->downloadFile($idFile);
+        $fileName = $user->files->find($idFile)->path;
+        $path = getenv('ROOT_FILES_PATH') . $user->id . "/";
+        return response()->file($path . $fileName);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\File;
+use App\Models\File as FileDb;
+use Illuminate\Support\Facades\File;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
 
 class FileService
 {
@@ -16,7 +18,7 @@ class FileService
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->userFolder = getenv('ROOT_FILES_PATH') . $this->user->id;
+        $this->userFolder = getenv('ROOT_FILES_PATH') . $this->user->id . "/";
     }
 
     public function getUser(): User
@@ -31,19 +33,20 @@ class FileService
 
     public function createUserDirectoryIfNotExists(): bool
     {
-        return Storage::makeDirectory($this->userFolder);
+        if (!file_exists ($this->userFolder)) {
+            return mkdir ($this->userFolder);
+        }
+        return false;
     }
 
-    public function saveFile($file): void
+    public function saveFile(UploadedFile $file): void
     {
-        $file->store(getenv('ROOT_FILES_PATH') . $this->user->id);
-        File::create(
-            [
-                'id_user' => $this->user->id,
-                'size'    => $file->getSize(),
-                'path'    => $file->getClientOriginalName()
-            ]
-        );
+        file_put_contents($this->userFolder . $file->getClientOriginalName(), File::get($file->getRealPath()));
+        FileDb::create([
+            'id_user' => $this->user->id,
+            'size'    => $file->getSize(),
+            'path'    => $file->getClientOriginalName()
+        ]);
     }
 
     public function renameFile(int $fileId, string $newName): void
@@ -52,7 +55,7 @@ class FileService
         $oldName = $this->userFolder . '/' . $file->path;
         $newName = $this->userFolder . '/' . $newName;
 
-        Storage::move($oldName, $newName);
+        rename($oldName, $newName);
         $file->path = $newName;
         $file->save();
     }
@@ -60,7 +63,7 @@ class FileService
     public function downloadFile(int $fileId): string
     {
         $file = $this->user->files()->where('id', $fileId)->first();
-        return Storage::download($this->userFolder . '/' . $file->path);
+        return file_get_contents ($this->userFolder . $file->path);
     }
 
     public function deleteFile(int $fileId): void
