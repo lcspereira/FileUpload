@@ -2,6 +2,9 @@ require('./bootstrap');
 
 var $ = require('jquery');
 
+/**
+ * Render table by Ajax
+ */
 const renderFileTable = function () {
     $.ajax({
         url: "/files/list",
