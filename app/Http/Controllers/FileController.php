@@ -11,10 +11,10 @@ class FileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('files',compact('files'));
+        return view('files');
     }
 
-    public function listFiles()
+    public function list()
     {
         try {
             $user = Auth::user();

@@ -24,9 +24,9 @@ class FileService
         return $this->user;
     }
 
-    public function listFilesForUser(): HasMany
+    public function listFilesForUser()
     {
-        return $this->user->files();
+        return $this->user->files;
     }
 
     public function createUserDirectoryIfNotExists(): bool

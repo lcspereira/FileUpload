@@ -33,3 +33,5 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/files/rename/{idFile}', 
 Route::middleware(['auth:sanctum', 'verified'])->get('/files/delete/{idFile}', [FileController::class, 'delete'])->name('files.delete');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/files/download/{idFile}', [FileController::class, 'download'])->name('files.download');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/files/list/', [FileController::class, 'list'])->name('files.list');
