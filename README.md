@@ -15,8 +15,11 @@ MySQL
 
 ## Install 
 Just clone the project, and run the commands
+```
   composer install
   vendor/bin/sail up
+```
+
 Also, you must set the ROOT_FILES_PATH on .env file,
 poiting to the directory where the files will be stored.
 
